@@ -13,7 +13,7 @@ gps.df <- read.csv(latest_file)
 gps.df$datetimeGMT <- as.POSIXct(gps.df$datetimeGMT, format="%Y-%m-%d %H:%M:%S", tz="GMT")
 
 # Filtrar datos de los últimos 2 días
-lst_days <- as.POSIXct(Sys.time(), tz="GMT") - (2 * 24 * 60 * 60)  # Hace 2 días
+lst_days <- as.POSIXct(Sys.time(), tz="GMT") - (3 * 24 * 60 * 60)  # Hace 2 días
 gps.df2 <- gps.df %>% filter(datetimeGMT >= lst_days)
 
 # Crear la paleta de colores para cada birdID
@@ -22,7 +22,7 @@ pal.colors <- colorFactor(palette = "Set1", domain = gps.df$birdID)
 # Crear el mapa base
 leafletOptions <- leaflet::leafletOptions(preferCanvas = TRUE)
 imap <- leaflet(options = leafletOptions) %>%
-  addTiles(options = tileOptions(maxZoom = 20))
+  addTiles(options = tileOptions(maxZoom = 50))
 
 # Agregar capas de tracks por cada individuo
 grupos <- unique(gps.df$birdID)  # Obtener los ID únicos
