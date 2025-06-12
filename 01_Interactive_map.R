@@ -96,7 +96,7 @@ if (length(imap$x$calls) == 0) {
   message("Error: El mapa no contiene capas renderizables. No se generará index.html ni index_files.")
   quit(status = 1)
 } else {
-  saveWidget(imap, file = "docs/index.html", selfcontained = FALSE, libdir = "docs/index_files")
+  saveWidget(imap, file = "docs/index.html", selfcontained = FALSE, libdir = "index_files")
   cat(sprintf("\n<!-- Última actualización: %s -->\n", timestamp),
       file = "docs/index.html", append = TRUE)
 }
