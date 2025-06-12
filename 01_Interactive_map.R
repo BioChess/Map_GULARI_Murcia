@@ -100,7 +100,7 @@ tryCatch({
              file = "docs/index.html", 
              selfcontained = FALSE, 
              libdir = "index_files",  # Importante: sin la ruta docs/
-             title = "Mapa GULARI Galicia")
+             title = "Mapa GULARI Murcia")
   
   # Mover los archivos a la ubicación correcta
   if(dir.exists("index_files")) {
