@@ -89,14 +89,17 @@ if (length(imap$x$calls) == 0) {
 if (file.exists("docs/index.html")) file.remove("docs/index.html")
 if (dir.exists("docs/index_files")) unlink("docs/index_files", recursive = TRUE)
 
-# Guardar el mapa correctamente
-if (!dir.exists("docs")) {
-  dir.create("docs")
+# Guardar solo si hay contenido renderizable
+if (!dir.exists("docs")) dir.create("docs")
+
+if (length(imap$x$calls) == 0) {
+  message("Error: El mapa no contiene capas renderizables. No se generará index.html ni index_files.")
+  quit(status = 1)
+} else {
+  saveWidget(imap, file = "docs/index.html", selfcontained = FALSE, libdir = "docs/index_files")
+  cat(sprintf("\n<!-- Última actualización: %s -->\n", timestamp),
+      file = "docs/index.html", append = TRUE)
 }
-#saveWidget(imap, file = "docs/index.html", selfcontained = TRUE)
-saveWidget(imap, file = "docs/index.html", selfcontained = FALSE, libdir = "docs/index_files")
-cat(sprintf("\n<!-- Última actualización: %s -->\n", timestamp),
-    file = "docs/index.html", append = TRUE)
 
 
 
