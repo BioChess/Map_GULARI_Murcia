@@ -89,17 +89,31 @@ if (length(imap$x$calls) == 0) {
 if (file.exists("docs/index.html")) file.remove("docs/index.html")
 if (dir.exists("docs/index_files")) unlink("docs/index_files", recursive = TRUE)
 
-# Guardar solo si hay contenido renderizable
-if (!dir.exists("docs")) dir.create("docs")
-
-if (length(imap$x$calls) == 0) {
-  message("Error: El mapa no contiene capas renderizables. No se generará index.html ni index_files.")
-  quit(status = 1)
-} else {
-  saveWidget(imap, file = "docs/index.html", selfcontained = FALSE, libdir = "index_files")
-  cat(sprintf("\n<!-- Última actualización: %s -->\n", timestamp),
-      file = "docs/index.html", append = TRUE)
+# Guardar el mapa correctamente
+if (!dir.exists("docs")) {
+  dir.create("docs", recursive = TRUE, showWarnings = FALSE)
 }
+
+# Modifica la parte final del script donde guardas el mapa:
+tryCatch({
+  saveWidget(imap, 
+             file = "docs/index.html", 
+             selfcontained = FALSE, 
+             libdir = "index_files",  # Importante: sin la ruta docs/
+             title = "Mapa GULARI Galicia")
+  
+  # Mover los archivos a la ubicación correcta
+  if(dir.exists("index_files")) {
+    file.rename("index_files", "docs/index_files")
+  }
+  
+  cat(sprintf("\n<!-- Última actualización: %s -->\n", timestamp), 
+      file = "docs/index.html", append = TRUE)
+}, error = function(e) {
+  message("ERROR al guardar el widget: ", e$message)
+  quit(status = 1)
+})
+
 
 
 
