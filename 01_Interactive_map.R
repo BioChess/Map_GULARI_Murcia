@@ -22,7 +22,7 @@ pal.colors <- colorFactor(palette = "Set1", domain = gps.df$birdID)
 # Crear el mapa base
 leafletOptions <- leaflet::leafletOptions(preferCanvas = TRUE)
 imap <- leaflet(options = leafletOptions) %>%
-  addTiles(options = tileOptions(maxZoom = 50))
+ addProviderTiles("Esri.WorldImagery", group = "Satélite")
 
 # Agregar capas de tracks por cada individuo
 grupos <- unique(gps.df$birdID)  # Obtener los ID únicos
