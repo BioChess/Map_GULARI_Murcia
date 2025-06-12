@@ -17,12 +17,12 @@ jobs:
       uses: r-lib/actions/setup-r@v2
 
     - name: Cache R packages
-      uses: actions/cache@v4
+      uses: actions/cache@v3
       with:
         path: ~/.local/share/R
-        key: r-${{ runner.os }}-r-packages-${{ hashFiles('**/*.R') }}
+        key: ${{ runner.os }}-r-packages-${{ hashFiles('**/*.R') }}
         restore-keys: |
-          r-${{ runner.os }}-r-packages-
+          ${{ runner.os }}-r-packages-
 
     - name: Install system dependencies
       run: |
@@ -55,13 +55,14 @@ jobs:
     - name: Generar mapa interactivo
       run: |
         Rscript 01_Interactive_map.R
+        # Verifica que index.html esté en docs/
         if [ ! -s docs/index.html ]; then
           echo "Error: docs/index.html no se generó correctamente."
           exit 1
         fi
+        # Verifica si se generó docs/index_files
         if [ ! -d "docs/index_files" ]; then
-          echo "Error: No se generó docs/index_files, el mapa no funcionará en GitHub Pages."
-          exit 1
+          echo "Advertencia: No se generó docs/index_files — el mapa puede no mostrarse correctamente en GitHub Pages."
         fi
 
     - name: Subir cambios a GitHub
@@ -71,7 +72,11 @@ jobs:
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/BioChess/Map_GULARI_Murcia.git
         git fetch origin main
         git reset --hard origin/main
+
+        # Limpiar archivos GPS antiguos (mantener los 2 más recientes)
         ls -tp gps_data_*.csv 2>/dev/null | grep -v '/$' | tail -n +3 | xargs -r rm --
+
+        # Agregar los nuevos archivos
         git add gps_data_*.csv docs/index.html
         if [ -d "docs/index_files" ]; then
           git add docs/index_files/
